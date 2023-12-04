@@ -1,0 +1,39 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+// Função que verifica se a string é aceita pelo AFD
+bool aceita_automato_1(char *str) {
+    int estado = 0;  // Estado inicial
+
+    while (*str != '\0') {
+        if (estado == 0 && *str == '0') {
+            // Permanece no estado 0 ao ler 0
+            str++;
+        } else if (estado == 0 && *str == '1') {
+            // Move para o estado 1 ao ler 1
+            estado = 1;
+            str++;
+        } else if (estado == 1 && *str == '1') {
+            // Move para o estado 0 ao ler 1
+            estado = 0;
+            str++;
+        } else {
+            // Qualquer outra transição é inválida
+            return false;
+        }
+    }
+
+    // Verifica se a string terminou no estado final
+    return estado == 1;
+}
+
+int main() {
+    // Teste
+    if (aceita_automato_1("0110")) {
+        printf("A string '0110' é aceita pelo autômato.\n");
+    } else {
+        printf("A string '0110' é rejeitada pelo autômato.\n");
+    }
+
+    return 0;
+}
