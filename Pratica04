@@ -1,0 +1,74 @@
+#include <stdio.h>
+#include <string.h>
+
+// Função para calcular o tamanho da string recursivamente
+int calcular_tamanho_recursivo(char *str) {
+    if (*str == '\0') {
+        return 0;
+    } else {
+        return 1 + calcular_tamanho_recursivo(str + 1);
+    }
+}
+
+// Função auxiliar para inverter a string recursivamente
+void inverter_aux(char *str, char *reverso, int index) {
+    if (*str == '\0') {
+        reverso[index] = '\0'; // Adiciona o terminador nulo ao final da string reversa
+        return;
+    } else {
+        reverso[index] = *str;
+        inverter_aux(str + 1, reverso, index - 1);
+    }
+}
+// Função para inverter a string
+void inverter_string_recursivo(char *str, char *reverso) {
+    int tamanho = strlen(str);
+
+    // Inicializa a string reversa
+    reverso[0] = '\0';
+
+    // Chama a função auxiliar para inverter a string
+    inverter_aux(str, reverso, tamanho - 1);
+}
+
+int main() {
+    FILE *arquivo;
+    char nome_arquivo[] = "arquivo.txt";
+    char string_original[1000];
+    char reverso[1000];
+    int tamanho;
+
+    // Leitura da string do arquivo
+    arquivo = fopen(nome_arquivo, "r");
+    if (arquivo == NULL) {
+        printf("Erro ao abrir o arquivo.\n");
+        return 1;
+    }
+
+    fgets(string_original, sizeof(string_original), arquivo);
+    fclose(arquivo);
+
+    // Remover a quebra de linha do final da string lida
+    string_original[strcspn(string_original, "\n")] = '\0';
+
+    // Cálculo do tamanho
+    tamanho = calcular_tamanho_recursivo(string_original);
+
+    // Inversão da string
+    inverter_string_recursivo(string_original, reverso);
+
+    // Armazenamento das informações no arquivo original
+    arquivo = fopen(nome_arquivo, "w");
+    if (arquivo == NULL) {
+        printf("Erro ao abrir o arquivo para escrita.\n");
+        return 1;
+    }
+
+    fprintf(arquivo, "Tamanho: %d\n", tamanho);
+    fprintf(arquivo, "Reverso: %s\n", reverso);
+    fprintf(arquivo, "String Original: %s\n", string_original);
+
+    fclose(arquivo);
+
+    return 0;
+}
